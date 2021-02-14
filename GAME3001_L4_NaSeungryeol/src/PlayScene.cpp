@@ -117,7 +117,8 @@ void PlayScene::GUI_Function()
 void PlayScene::m_buildGrid()
 {
 	auto tileSize = Config::TILE_SIZE;
-	
+
+	// add tiles to the grid
 	for (int row = 0; row < Config::ROW_NUM; ++row)
 	{
 		for (int col = 0; col < Config::COL_NUM; ++col)
@@ -129,6 +130,53 @@ void PlayScene::m_buildGrid()
 			m_pGrid.push_back(tile);
 		}
 	}
+
+	// create references for each tile to its neighbours
+	for (int row = 0; row < Config::ROW_NUM; ++row)
+	{
+		for (int col = 0; col < Config::COL_NUM; ++col)
+		{
+			Tile* tile = m_getTile(col, row);
+
+			if (row == 0)
+			{
+				tile->SetNeighbourTile(TOP_TILE, nullptr);
+			}
+			else
+			{
+				tile->SetNeighbourTile(TOP_TILE, m_getTile(col, row - 1));
+			}
+
+			if (col == Config::COL_NUM - 1)
+			{
+				tile->SetNeighbourTile(RIGHT_TILE, nullptr);
+			}
+			else
+			{
+				tile->SetNeighbourTile(RIGHT_TILE, m_getTile(col + 1, row));
+			}
+
+			if (row == Config::ROW_NUM - 1)
+			{
+				tile->SetNeighbourTile(BOTTOM_TILE, nullptr);
+			}
+			else
+			{
+				tile->SetNeighbourTile(BOTTOM_TILE, m_getTile(col, row + 1));
+			}
+			
+			if (col == 0)
+			{
+				tile->SetNeighbourTile(LEFT_TILE, nullptr);
+			}
+			else
+			{
+				tile->SetNeighbourTile(LEFT_TILE, m_getTile(col - 1, row));
+			}
+		}
+	}
+
+	std::cout << m_pGrid.size() << std::endl;
 }
 
 void PlayScene::m_setGridEnabled(bool state) 
@@ -142,4 +190,9 @@ void PlayScene::m_setGridEnabled(bool state)
 	{
 		SDL_RenderClear(Renderer::Instance()->getRenderer());
 	}
+}
+
+Tile* PlayScene::m_getTile(int col, int row)
+{
+	return m_pGrid[(row * Config::COL_NUM) + col];
 }

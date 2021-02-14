@@ -35,6 +35,8 @@ private:
 	void m_buildGrid();
 	void m_setGridEnabled(bool state);
 	std::vector<Tile*> m_pGrid;
+
+	Tile* m_getTile(int col, int row);
 	
 };
 
